@@ -2,16 +2,20 @@
 import urllib2
 from bs4 import BeautifulSoup
 class GetPhilosophy:
-    num_articles = 0
-    articles = []
+    '''
+    Object that is assigned a random article from Wikipedia and webcrawls until it reaches the Wikipedia
+    article Philosophy. Stores data based on its journey to Philosophy.
+    '''
     def __init__(self):
         '''
-        Initialize class with random article and add random article to article list
+        Initialize class
         '''
-        starting_article = urllib2.urlopen('https://en.wikipedia.org/wiki/Special:Random').geturl()
-        articles.append(starting_article)
+        self.num_articles = 0
+        self.starting_article = urllib2.urlopen('https://en.wikipedia.org/wiki/Special:Random').geturl()
+        self.articles = [self.starting_article]
+        self.philosophy = False
 
-    def is_valid_link(teststr):
+    def is_valid_link(self, teststr):
         '''
         Check whether or not the string is a valid link for navigation
         '''
@@ -22,7 +26,7 @@ class GetPhilosophy:
             return False
         return True
 
-    def is_valid_paragraph(test):
+    def is_valid_paragraph(self, test):
         '''
         Tests validity of paragraph object (soup.p)
         '''
@@ -32,11 +36,11 @@ class GetPhilosophy:
             return False
         #return true if one link in the paragraph is valid
         for link in links:
-            if is_valid_link(link['href']):
+            if self.is_valid_link(link['href']):
                 return True
         return False
 
-    def get_first_link(url):
+    def get_first_link(self, url):
         '''
         Returns link to the first valid wiki article of param url
         '''
@@ -47,33 +51,52 @@ class GetPhilosophy:
         #Loop through all paragraph tags in page
         for child in soup.find_all('p'):
             #check for validity of paragraph
-            if is_valid_paragraph(child):
+            if self.is_valid_paragraph(child):
                 #search through every link in first valid paragraph and find first valid link
                 for childlink in child.find_all('a'):
-                    if is_valid_link(childlink['href']):
+                    if self.is_valid_link(childlink['href']):
                         return 'https://en.wikipedia.org' + childlink['href']
-    def find_philosophy():
+
+    def find_philosophy(self):
         '''
-        Starts at first random Wikipedia article and loops until first article is found
+        Starts at first random Wikipedia article and loops until Philosophy article is found
         '''
-        while True:
-            num_articles = num_articles + 1
-            first_link = get_first_link(starting_article)
-            articles.append(first_link)
-            if first_link == 'https://en.wikipedia.org/wiki/Philosophy':
-                break
-            starting_article = first_link
-    '''
-    print("Starting search at " + starting_article[30:])
-    #Navigate to each first link until philosophy is reached
-    while True:
-        first_link = get_first_link(random_url)
-        print(first_link[30:])
-        #Stop looping when philosophy is found
-        if 'https://en.wikipedia.org/wiki/Philosophy' == first_link:
-            num_articles = num_articles + 1
-            print('Found Philosophy in ' + str(num_articles) + ' trys!')
-            break
-        random_url = first_link
-        num_articles = num_articles + 1
-    '''
+        try:
+            curr_article = self.starting_article
+            while True:
+                self.num_articles = self.num_articles + 1
+                first_link = self.get_first_link(curr_article)
+                #Skips over article if it has already been traveled to
+                if first_link not in self.articles:
+                    self.articles.append(first_link)
+                    #Stop looking when Philosophy is found
+                    if first_link == 'https://en.wikipedia.org/wiki/Philosophy':
+                        self.philosophy = True
+                        break
+                curr_article = first_link
+        except Exception as ex:
+            print('A ' + ex + ' error occured while web crawling.')
+            print('This error occured on the article: ' + curr_article)
+            
+    def get_articles(self):
+        '''
+        Print traveled to articles in instance of class
+        '''
+        for article in self.articles:
+            print(article[30:])
+
+    def get_info(self):
+        '''
+        Print information about the current instance
+        '''
+        if self.philosophy:
+            print('This object started at the article "' + self.starting_article[30:] + 
+                 '" and reached Philosophy in ' + str(self.num_articles) + ' tries. The articles'
+                 ' that it traveled to are:\n')
+            self.get_articles()
+        else:
+            print('This object has not yet reached philosophy.')
+            
+phil = GetPhilosophy()
+phil.find_philosophy()
+phil.get_info()
