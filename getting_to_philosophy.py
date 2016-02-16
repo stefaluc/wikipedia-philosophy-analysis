@@ -38,7 +38,7 @@ def get_first_link(url):
                 if is_valid_link(childlink['href']):
                     return 'https://en.wikipedia.org' + childlink['href']
 
-print("Starting search at " + urllib2.urlopen(random_url).geturl()[30:])
+print("Starting search at: " + urllib2.urlopen(random_url).geturl()[30:])
 numtrys = 0
 #Navigate to each first link until philosophy is reached
 while True:

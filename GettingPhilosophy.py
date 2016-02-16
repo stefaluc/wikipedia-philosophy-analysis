@@ -19,7 +19,7 @@ class GetPhilosophy:
         '''
         Check whether or not the string is a valid link for navigation
         '''
-        if not teststr.startswith('/wiki/'):
+        if not teststr.startswith('/wiki/') or teststr == '/wiki/Latin':
             return False
         string = teststr[6:]
         if string.startswith('Help:') or string.startswith('File:') or string.endswith('.ogg') or string.startswith('Wikipedia:'):
@@ -66,6 +66,7 @@ class GetPhilosophy:
             while True:
                 self.num_articles = self.num_articles + 1
                 first_link = self.get_first_link(curr_article)
+                print(first_link[30:])
                 #Skips over article if it has already been traveled to
                 if first_link not in self.articles:
                     self.articles.append(first_link)
@@ -75,7 +76,7 @@ class GetPhilosophy:
                         break
                 curr_article = first_link
         except Exception as ex:
-            print('A ' + ex + ' error occured while web crawling.')
+            print('A ' + str(ex) + ' error occured while web crawling.')
             print('This error occured on the article: ' + curr_article)
             
     def get_articles(self):
@@ -90,10 +91,8 @@ class GetPhilosophy:
         Print information about the current instance
         '''
         if self.philosophy:
-            print('This object started at the article "' + self.starting_article[30:] + 
-                 '" and reached Philosophy in ' + str(self.num_articles) + ' tries. The articles'
-                 ' that it traveled to are:\n')
-            self.get_articles()
+            print('\nThis object started at the article "' + self.starting_article[30:] + 
+                 '" and reached Philosophy in ' + str(self.num_articles) + ' tries.')
         else:
             print('This object has not yet reached philosophy.')
             
