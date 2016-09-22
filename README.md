@@ -4,6 +4,7 @@ GettingToPhilosophy.py is a basic web crawler that crawls Wikipedia in accordanc
 
 The script begins at a [random article](https://en.wikipedia.org/wiki/Special:Random) and navigates to the first link on every subsequent until the page [Philosophy](https://en.wikipedia.org/wiki/Philosophy) is reached.
 
+## Demo
 ![Test Run](https://raw.githubusercontent.com/stefaluc/wikipedia-philosophy-analysis/master/example.gif)
 
 Minor bug fixes in webcrawling are still required for this script (not every trial run is successful), as well as further data analysis.
